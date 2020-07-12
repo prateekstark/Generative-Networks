@@ -1,1 +1,1 @@
-rm -rf *log *png *gif *pkl
+rm -rf *log *png *gif *pkl __pycache__

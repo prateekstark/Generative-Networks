@@ -42,10 +42,10 @@ train = datasets.MNIST('', train=True,
 
 trainset = torch.utils.data.DataLoader(train, batch_size=BATCH_SIZE, shuffle=True)
 
-logging.info("Data loaded...")
-logging.info("EPOCHS: " + str(EPOCHS))
-logging.info("BATCH_SIZE: " + str(BATCH_SIZE))
-logging.info("SAVE_LOSS_COUNTER: " + str(SAVE_LOSS_COUNTER))
+logger.info("Data loaded...")
+logger.info("EPOCHS: " + str(EPOCHS))
+logger.info("BATCH_SIZE: " + str(BATCH_SIZE))
+logger.info("SAVE_LOSS_COUNTER: " + str(SAVE_LOSS_COUNTER))
       
 def vae_loss(output, target, mu, logvariance):
     BCEloss = F.binary_cross_entropy(output, target, reduction='sum')
@@ -61,8 +61,8 @@ def eval(vae, epoch, z_dim):
     
 vae = VAE(LATENT_SPACE_SIZE).to(device)
 optimizer = torch.optim.Adam(vae.parameters(), lr=0.001)
-logging.info("optimizer: Adam")
-logging.info("LEARNING_RATE: " + str(LEARNING_RATE))
+logger.info("optimizer: Adam")
+logger.info("LEARNING_RATE: " + str(LEARNING_RATE))
 
 loss_counter = []
 total_loss = 0
@@ -70,7 +70,7 @@ counter = 1
 
 vae.train()
 for epoch in range(EPOCHS):
-    logging.info("epoch: " + str(epoch))
+    logger.info("epoch: " + str(epoch))
     for data in trainset:
         X, _ = data
         X = X.view(-1, 784).to(device)
@@ -82,7 +82,7 @@ for epoch in range(EPOCHS):
         total_loss += loss.item()
         moving_average = total_loss/counter
         if(counter%100 == 0):
-            logging.info(str(counter) + ": " + str(moving_average))
+            logger.info(str(counter) + ": " + str(moving_average))
         loss_counter.append(moving_average)
         counter += 1
     eval(vae, epoch, LATENT_SPACE_SIZE)
@@ -92,7 +92,7 @@ if(SAVE_LOSS_COUNTER):
     with open('loss.pkl', 'wb') as f:
         pickle.dump(loss_counter, f)
     plot_loss_counter(loss_counter)
-    logging.info("loss counter curve saved...")
+    logger.info("loss counter curve saved...")
 
 make_gif()
-logging.info("Eval GIF saved...")
+logger.info("Eval GIF saved...")
