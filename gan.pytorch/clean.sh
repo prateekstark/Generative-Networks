@@ -1,0 +1,1 @@
+rm -rf *log *png *gif *pt __pycache__
